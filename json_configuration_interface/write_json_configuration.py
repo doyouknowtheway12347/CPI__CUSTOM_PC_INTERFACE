@@ -259,46 +259,46 @@ class CommandLineApp:
 
 
 # Example Usage
-if __name__ == "__main__":
-    # Create some commands
-    command1 = Command(
-        display_name="Fetch Weather",
-        description="Fetches weather data for a specified city.",
-        trigger_command="weather <city>",
-        function="fetch_weather",
-        args={"city": "New York"},
-        next_page=None,
-        execution_on_initialize=True,
-        importance="high",
-        run_on_closure=False,
-        scheduling="none"
-    )
+# if __name__ == "__main__":
+#     # Create some commands
+#     command1 = Command(
+#         display_name="Fetch Weather",
+#         description="Fetches weather data for a specified city.",
+#         trigger_command="weather <city>",
+#         function="fetch_weather",
+#         args={"city": "New York"},
+#         next_page=None,
+#         execution_on_initialize=True,
+#         importance="high",
+#         run_on_closure=False,
+#         scheduling="none"
+#     )
 
-    command2 = Command(
-        display_name="Display Disk Usage",
-        description="Displays the current disk usage of the system.",
-        trigger_command="disk_usage",
-        function="display_disk_usage",
-        args={},
-        next_page="Disk Options",
-        execution_on_initialize=False,
-        importance="medium",
-        run_on_closure=False,
-        scheduling="none"
-    )
+#     command2 = Command(
+#         display_name="Display Disk Usage",
+#         description="Displays the current disk usage of the system.",
+#         trigger_command="disk_usage",
+#         function="display_disk_usage",
+#         args={},
+#         next_page="Disk Options",
+#         execution_on_initialize=False,
+#         importance="medium",
+#         run_on_closure=False,
+#         scheduling="none"
+#     )
 
-    # Create a page and add commands
-    main_menu = Page(name="Main Menu")
-    main_menu.add_command(command1)
-    main_menu.add_command(command2)
+#     # Create a page and add commands
+#     main_menu = Page(name="Main Menu")
+#     main_menu.add_command(command1)
+#     main_menu.add_command(command2)
 
-    # Create the application and add pages
-    app = CommandLineApp(json_file=r"C:\01_PYTHON_CODE\Projects\CPI__CUSTOM_PC_INTERFACE\configuration.json")
-    app.add_page(main_menu)
+#     # Create the application and add pages
+#     app = CommandLineApp(json_file=r"C:\01_PYTHON_CODE\Projects\CPI__CUSTOM_PC_INTERFACE\configuration.json")
+#     app.add_page(main_menu)
 
-    # Save the configuration to file
-    app.save_to_file()
+#     # Save the configuration to file
+#     app.save_to_file()
 
-    # Load and display menu from the file
-    app.load_from_file()
-    app.display_menu("Main Menu")
+#     # Load and display menu from the file
+#     app.load_from_file()
+#     app.display_menu("Main Menu")

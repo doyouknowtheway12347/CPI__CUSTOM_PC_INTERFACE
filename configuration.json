@@ -28,6 +28,18 @@
                     "importance": "medium",
                     "run_on_closure": false,
                     "scheduling": "none"
+                },
+                {
+                    "display_name": "Debugger",
+                    "description": "Used to debug the code of this project.",
+                    "trigger_command": "debug",
+                    "function": "debug",
+                    "args": {},
+                    "next_page": null,
+                    "execution_on_initialize": false,
+                    "importance": "moderate",
+                    "run_on_closure": false,
+                    "scheduling": "none"
                 }
             ]
         }

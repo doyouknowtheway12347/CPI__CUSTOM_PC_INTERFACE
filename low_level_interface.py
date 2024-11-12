@@ -1,6 +1,4 @@
 import json
-import re
-
 
 class Command:
     """
@@ -54,7 +52,8 @@ class MainClass:
             json_file (str): Path to the JSON configuration file.
         """
         self.json_file = json_file
-        self.commands = []  # List to store commands
+        self.pages = []  # Initialize pages to store the structure of pages and commands.
+        self.commands = []  # List to store all commands across pages for listing/searching
         self.load_from_file()
 
     def load_from_file(self):
@@ -64,15 +63,14 @@ class MainClass:
         try:
             with open(self.json_file, 'r') as file:
                 data = json.load(file)
-                print(data)  # Debugging: Check what data looks like
                 
-                # Iterate through each page in the JSON
-                for page_data in data.get('pages', []):  # Use .get to avoid KeyError if 'pages' is missing
-                    page_name = page_data.get('name', 'Unnamed Page')
-                    print(f"Loading commands for page: {page_name}")
-                    
-                    # Iterate through the commands in each page
-                    for cmd_data in page_data.get('commands', []):  # Same here for 'commands' in each page
+                # Clear and populate pages attribute from JSON file data
+                self.pages = data.get('pages', [])
+                print(f"Loaded pages: {[page['name'] for page in self.pages]}")  # Debugging
+
+                # Populate command list from each page
+                for page_data in self.pages:
+                    for cmd_data in page_data.get('commands', []):
                         # Convert each command data into a Command object
                         command = Command(
                             display_name=cmd_data['display_name'],
@@ -93,16 +91,6 @@ class MainClass:
         except json.JSONDecodeError:
             print(f"Error reading JSON from file '{self.json_file}'.")
 
-    def list_commands(self):
-        """
-        Lists all available commands in the application.
-        """
-        if not self.commands:
-            print("No commands available.")
-        else:
-            for idx, cmd in enumerate(self.commands, 1):
-                print(f"{idx}. {cmd.display_name}: {cmd.description}")
-
     def find_command_by_trigger(self, trigger_command):
         """
         Find a command by its trigger string, allowing for arguments to be passed in.
@@ -118,10 +106,11 @@ class MainClass:
             # Extract the base command (everything before any space) from the trigger command
             base_command = cmd.trigger_command.split(' ')[0]  # First word is the base command
             # Compare the base part of the trigger command
-            if trigger_command.startswith(base_command):
+            if trigger_command.lower() == base_command.lower():
                 # If the base command matches, you could optionally parse arguments here
                 return cmd
-        return None
+    
+        return Command("Error", "No command found with this trigger", None, None, None, None, False, None, None, "none")
 
     def get_page_names(self):
         """
@@ -129,7 +118,7 @@ class MainClass:
         """
         return [page['name'] for page in self.pages]
 
-    def get_commands_for_page(self, page_name):
+    def get_commands_for_page(self, page_name="Main Menu"):
         """
         Retrieves the commands available on a specific page.
 
@@ -145,53 +134,8 @@ class MainClass:
         else:
             return []
 
-    def get_command_details_for_page(self, page_name, trigger_command):
-        """
-        Retrieves the details (name, trigger, description) of a specific command on a given page.
-
-        Args:
-            page_name (str): The name of the page containing the command.
-            trigger_command (str): The trigger command to search for.
-        
-        Returns:
-            dict: A dictionary containing the 'name', 'trigger_command', and 'description' of the command, or None if not found.
-        """
-        page = next((page for page in self.pages if page['name'] == page_name), None)
-        if page:
-            command = next((cmd for cmd in page['commands'] if cmd['trigger_command'] == trigger_command), None)
-            if command:
-                return {
-                    'name': command['display_name'],
-                    'trigger_command': command['trigger_command'],
-                    'description': command['description']
-                }
-        return None
-
-
-    # def run(self):
-    #     """
-    #     Starts the interactive CLI interface, allowing the user to input commands.
-    #     """
-    #     print("Welcome to the CLI App!")
-    #     while True:
-    #         print("\nAvailable Commands:")
-    #         self.list_commands()
-    #         user_input = input("\nEnter a command to execute (or 'exit' to quit): ").strip().lower()
-    #         if user_input == 'exit':
-    #             print("Exiting the application.")
-    #             break
-    #         else:
-    #             command = self.find_command_by_trigger(user_input)
-    #             if command:
-    #                 print(f"Executing command: {command.display_name}")
-    #                 print(f"Function to execute: {command.function}")
-    #                 # You can later expand this to actually execute the command
-    #             else:
-    #                 print(f"Command '{user_input}' not found.")
-
-
+# Initialize and use the MainClass
 if __name__ == "__main__":
-    # Initialize the MainClass with the path to the JSON configuration file
     app = MainClass(json_file=r"C:\01_PYTHON_CODE\Projects\CPI__CUSTOM_PC_INTERFACE\configuration.json")
-
-    # app.find_command_by_trigger("disk_usage")
+    # print(app.get_commands_for_page("Main Menu"))
+    debugger = app.find_command_by_trigger("deasdfbug")
