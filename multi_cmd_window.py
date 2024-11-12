@@ -22,7 +22,7 @@ class Output:
         else:
             raise ValueError(f"Invalid channel index. Must be between 0 and {self.no_channels - 1}")
 
-    def print_all_data(self):
+    def print_all_data(self, smart_wrap=False):
         column_width = (self.total_width // self.no_channels) - 3
         wrapped_data = []
         
@@ -31,8 +31,13 @@ class Output:
             for data in channel:
                 for part in data.split("\n"):
                     while len(part) > column_width:
-                        channel_rows.append(part[:column_width])
-                        part = part[column_width:]
+                        if smart_wrap:
+                            split_index = part.rfind(" ", 0, column_width)
+                            split_index = split_index if split_index != -1 else column_width
+                        else:
+                            split_index = column_width
+                        channel_rows.append(part[:split_index].strip())
+                        part = part[split_index:].strip()
                     channel_rows.append(part)
             wrapped_data.append(channel_rows)
 
@@ -41,6 +46,7 @@ class Output:
         for i in range(max_rows):
             row = [channel_rows[i].ljust(column_width) if i < len(channel_rows) else " " * column_width for channel_rows in wrapped_data]
             print(" | ".join(row))
+
 
 
 
@@ -58,4 +64,4 @@ output.add_data(1, "This is channel 1's data. Another line here.\nAnd a new line
 # output.add_data(5, "More data for channel 5")
 
 print("\nPrinting all data:")
-output.print_all_data()
+output.print_all_data(smart_wrap=True)
