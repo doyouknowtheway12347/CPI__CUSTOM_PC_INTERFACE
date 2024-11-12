@@ -103,8 +103,6 @@ class MainClass:
             for idx, cmd in enumerate(self.commands, 1):
                 print(f"{idx}. {cmd.display_name}: {cmd.description}")
 
-  
-
     def find_command_by_trigger(self, trigger_command):
         """
         Find a command by its trigger string, allowing for arguments to be passed in.
@@ -125,32 +123,75 @@ class MainClass:
                 return cmd
         return None
 
+    def get_page_names(self):
+        """
+        Retrieves the names of all pages in the JSON configuration.
+        """
+        return [page['name'] for page in self.pages]
 
-    def run(self):
+    def get_commands_for_page(self, page_name):
         """
-        Starts the interactive CLI interface, allowing the user to input commands.
+        Retrieves the commands available on a specific page.
+
+        Args:
+            page_name (str): The name of the page for which to retrieve commands.
+        
+        Returns:
+            list: A list of command names available on the specified page.
         """
-        print("Welcome to the CLI App!")
-        while True:
-            print("\nAvailable Commands:")
-            self.list_commands()
-            user_input = input("\nEnter a command to execute (or 'exit' to quit): ").strip().lower()
-            if user_input == 'exit':
-                print("Exiting the application.")
-                break
-            else:
-                command = self.find_command_by_trigger(user_input)
-                if command:
-                    print(f"Executing command: {command.display_name}")
-                    print(f"Function to execute: {command.function}")
-                    # You can later expand this to actually execute the command
-                else:
-                    print(f"Command '{user_input}' not found.")
+        page = next((page for page in self.pages if page['name'] == page_name), None)
+        if page:
+            return [cmd['trigger_command'] for cmd in page['commands']]
+        else:
+            return []
+
+    def get_command_details_for_page(self, page_name, trigger_command):
+        """
+        Retrieves the details (name, trigger, description) of a specific command on a given page.
+
+        Args:
+            page_name (str): The name of the page containing the command.
+            trigger_command (str): The trigger command to search for.
+        
+        Returns:
+            dict: A dictionary containing the 'name', 'trigger_command', and 'description' of the command, or None if not found.
+        """
+        page = next((page for page in self.pages if page['name'] == page_name), None)
+        if page:
+            command = next((cmd for cmd in page['commands'] if cmd['trigger_command'] == trigger_command), None)
+            if command:
+                return {
+                    'name': command['display_name'],
+                    'trigger_command': command['trigger_command'],
+                    'description': command['description']
+                }
+        return None
+
+
+    # def run(self):
+    #     """
+    #     Starts the interactive CLI interface, allowing the user to input commands.
+    #     """
+    #     print("Welcome to the CLI App!")
+    #     while True:
+    #         print("\nAvailable Commands:")
+    #         self.list_commands()
+    #         user_input = input("\nEnter a command to execute (or 'exit' to quit): ").strip().lower()
+    #         if user_input == 'exit':
+    #             print("Exiting the application.")
+    #             break
+    #         else:
+    #             command = self.find_command_by_trigger(user_input)
+    #             if command:
+    #                 print(f"Executing command: {command.display_name}")
+    #                 print(f"Function to execute: {command.function}")
+    #                 # You can later expand this to actually execute the command
+    #             else:
+    #                 print(f"Command '{user_input}' not found.")
 
 
 if __name__ == "__main__":
     # Initialize the MainClass with the path to the JSON configuration file
     app = MainClass(json_file=r"C:\01_PYTHON_CODE\Projects\CPI__CUSTOM_PC_INTERFACE\configuration.json")
 
-    # Run the CLI app
-    app.run()
+    # app.find_command_by_trigger("disk_usage")
