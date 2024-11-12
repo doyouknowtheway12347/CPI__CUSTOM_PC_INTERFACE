@@ -117,18 +117,6 @@ class Output:
         if self.border:
             print("+" + (self.horizontal_line_char * (self.total_width - 2)) + "+")
 
-# Usage example
-# output = Output(3, total_width=130, partition_char="|", border=True, 
-#                 headers=["Channel 1", "Channel 2", "Channel 3"],
-#                 channel_widths=[30, 60, None], horizontal_line_char="+",
-#                 verbose=True)  # Custom channel widths and verbose flag enabled
-# output.add_data(0, "This is some text that will be broken into multiple lines if too long.")
-# output.add_data(1, "This is channel 1's data. Another line here.\nAnd a new line.")
-# output.add_data(2, "Just a simple line.")
-
-# print("\nPrinting all data:")
-# output.print_all_data(smart_wrap=True)
-
 """
 The Output class is designed to manage and display multi-channel data in a formatted table.
 

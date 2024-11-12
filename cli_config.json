@@ -1,0 +1,35 @@
+{
+    "pages": [
+        {
+            "name": "Main Menu",
+            "commands": [
+                {
+                    "display_name": "Fetch Weather",
+                    "description": "Fetches weather data for a specified city.",
+                    "trigger_command": "weather <city>",
+                    "function": "fetch_weather",
+                    "args": {
+                        "city": "New York"
+                    },
+                    "next_page": null,
+                    "execution_on_initialize": true,
+                    "importance": "high",
+                    "run_on_closure": false,
+                    "scheduling": "none"
+                },
+                {
+                    "display_name": "Display Disk Usage",
+                    "description": "Displays the current disk usage of the system.",
+                    "trigger_command": "disk_usage",
+                    "function": "display_disk_usage",
+                    "args": {},
+                    "next_page": "Disk Options",
+                    "execution_on_initialize": false,
+                    "importance": "medium",
+                    "run_on_closure": false,
+                    "scheduling": "none"
+                }
+            ]
+        }
+    ]
+}
