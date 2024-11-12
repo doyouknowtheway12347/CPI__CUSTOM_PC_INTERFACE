@@ -1,10 +1,13 @@
 class Output:
-    def __init__(self, no_channels, channel_data=None, total_width=80):
+    def __init__(self, no_channels, channel_data=None, total_width=80, 
+                 partition_char="|", border=False, headers=None):
         self.no_channels = no_channels
         self.total_width = total_width
+        self.partition_char = partition_char
+        self.border = border
+        self.headers = headers if headers and len(headers) == no_channels else None
         self.channel_data = [list() for _ in range(no_channels)]
         
-        # Initialize channel data if provided
         if channel_data is not None:
             for i, data in enumerate(channel_data):
                 if i < no_channels:
@@ -13,11 +16,7 @@ class Output:
                     print(f"Warning: Ignoring excess data for channel {i}.")
 
     def add_data(self, channel_index, data):
-        """
-        Add data as a single string to the specified channel.
-        """
         if 0 <= channel_index < self.no_channels:
-            # Ensure data is treated as a string and add it to the channel's data list
             self.channel_data[channel_index].append(str(data))
         else:
             raise ValueError(f"Invalid channel index. Must be between 0 and {self.no_channels - 1}")
@@ -43,25 +42,35 @@ class Output:
 
         max_rows = max(len(rows) for rows in wrapped_data)
 
+        # Print border, headers, and rows
+        if self.border:
+            print("+" + ("-" * (self.total_width - 2)) + "+")
+
+        if self.headers:
+            header_row = [header.center(column_width) for header in self.headers]
+            print((self.partition_char + " ").join(header_row).center(self.total_width))
+            if self.border:
+                print("+" + ("-" * (self.total_width - 2)) + "+")
+
         for i in range(max_rows):
-            row = [channel_rows[i].ljust(column_width) if i < len(channel_rows) else " " * column_width for channel_rows in wrapped_data]
-            print(" | ".join(row))
+            row = [
+                channel_rows[i].ljust(column_width) if i < len(channel_rows) else " " * column_width 
+                for channel_rows in wrapped_data
+            ]
+            print((f" {self.partition_char} ").join(row).center(self.total_width))
 
-
-
-
-
-
-
+        if self.border:
+            print("+" + ("-" * (self.total_width - 2)) + "+")
 
 # Usage example
-output = Output(2, total_width=80)
+output = Output(6, total_width=130, partition_char="|", border=True, 
+                headers=["Channel 1", "Channel 2", "Channel 3", "Channel 4", "Channel 5", "Channel 6"])
 output.add_data(0, "This is some text that will be broken into multiple lines if too long.")
 output.add_data(1, "This is channel 1's data. Another line here.\nAnd a new line.")
-# output.add_data(2, "Just a simple line.")
-# output.add_data(3, "Here's data that\nspans multiple lines.")
-# output.add_data(4, "Data for channel 4")
-# output.add_data(5, "More data for channel 5")
+output.add_data(2, "Just a simple line.")
+output.add_data(3, "Here's data that\nspans multiple lines.")
+output.add_data(4, "Data for channel 4")
+output.add_data(5, "More data for channel 5")
 
 print("\nPrinting all data:")
 output.print_all_data(smart_wrap=True)
