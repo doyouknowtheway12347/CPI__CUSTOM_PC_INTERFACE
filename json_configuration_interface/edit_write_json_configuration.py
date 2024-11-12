@@ -293,7 +293,7 @@ if __name__ == "__main__":
     main_menu.add_command(command2)
 
     # Create the application and add pages
-    app = CommandLineApp(json_file="cli_config.json")
+    app = CommandLineApp(json_file=r"C:\01_PYTHON_CODE\Projects\CPI__CUSTOM_PC_INTERFACE\configuration.json")
     app.add_page(main_menu)
 
     # Save the configuration to file
