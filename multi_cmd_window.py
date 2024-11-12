@@ -1,10 +1,12 @@
 class Output:
     def __init__(self, no_channels, channel_data=None, total_width=80, 
-                 partition_char="|", border=False, headers=None, channel_widths=None, verbose=False):
+                 partition_char="|", border=False, headers=None, channel_widths=None, 
+                 horizontal_line_char="-", verbose=False):
         # Initialize basic parameters
         self.no_channels = no_channels  # Number of channels
         self.total_width = total_width  # Total width for the entire output
         self.partition_char = partition_char  # Character used for partitioning columns
+        self.horizontal_line_char = horizontal_line_char  # Character for horizontal lines
         self.border = border  # Boolean to determine if borders should be printed
         self.verbose = verbose  # Flag to control if additional messages should be printed
 
@@ -84,14 +86,14 @@ class Output:
 
         # Print border if enabled
         if self.border:
-            print("+" + ("-" * (self.total_width - 2)) + "+")
+            print("+" + (self.horizontal_line_char * (self.total_width - 2)) + "+")
 
         # Print headers if provided
         if self.headers:
             header_row = [header.center(self.channel_widths[i]) for i, header in enumerate(self.headers)]
             print(f" {self.partition_char} ".join(header_row).center(self.total_width))
             if self.border:
-                print("+" + ("-" * (self.total_width - 2)) + "+")
+                print("+" + (self.horizontal_line_char * (self.total_width - 2)) + "+")
 
         # Print the data rows for each channel
         for i in range(max_rows):
@@ -113,15 +115,62 @@ class Output:
 
         # Print border if enabled
         if self.border:
-            print("+" + ("-" * (self.total_width - 2)) + "+")
+            print("+" + (self.horizontal_line_char * (self.total_width - 2)) + "+")
 
 # Usage example
-output = Output(3, total_width=130, partition_char="[-]", border=True, 
-                headers=["Channel 1 ", "Channel 2", "Channel 3"],
-                channel_widths=[30, 60, None], verbose=False)  # Custom channel widths and verbose flag enabled
-output.add_data(0, "This is some text that will be broken into multiple lines if too long.")
-output.add_data(1, "This is channel 1's data. Another line here.\nAnd a new line.")
-output.add_data(2, "Just a simple line.")
+# output = Output(3, total_width=130, partition_char="|", border=True, 
+#                 headers=["Channel 1", "Channel 2", "Channel 3"],
+#                 channel_widths=[30, 60, None], horizontal_line_char="+",
+#                 verbose=True)  # Custom channel widths and verbose flag enabled
+# output.add_data(0, "This is some text that will be broken into multiple lines if too long.")
+# output.add_data(1, "This is channel 1's data. Another line here.\nAnd a new line.")
+# output.add_data(2, "Just a simple line.")
 
-print("\nPrinting all data:")
-output.print_all_data(smart_wrap=True)
+# print("\nPrinting all data:")
+# output.print_all_data(smart_wrap=True)
+
+"""
+The Output class is designed to manage and display multi-channel data in a formatted table.
+
+It allows for customization of the output table's appearance, including:
+- The number of channels
+- The total width of the table
+- The partition character used between columns
+- Horizontal line characters for table borders
+- Whether or not to print borders around the table
+- The width of each channel
+- The ability to wrap and format long data entries to fit within column widths
+- Verbosity for warning messages during formatting
+
+Attributes:
+    no_channels (int): Number of channels in the table.
+    total_width (int): Total width of the table (including partitions).
+    partition_char (str): Character used to separate columns.
+    horizontal_line_char (str): Character used to draw horizontal lines in the table.
+    border (bool): Whether to print borders around the table.
+    verbose (bool): If True, prints additional messages for warnings and errors.
+    headers (list or None): Optional list of headers for the channels.
+    channel_widths (list): A list of widths for each channel, or None for automatic adjustment.
+    channel_data (list): A list of data for each channel.
+
+Methods:
+    __init__(no_channels, channel_data=None, total_width=80, partition_char="|", 
+             border=False, headers=None, channel_widths=None, horizontal_line_char="-", verbose=False):
+        Initializes the Output object with the specified settings.
+    
+    add_data(channel_index, data):
+        Adds data to the specified channel.
+    
+    print_all_data(smart_wrap=False):
+        Prints all data from all channels in a formatted table, with optional word wrapping.
+    
+Usage Example:
+    output = Output(3, total_width=130, partition_char="|", border=True, 
+                    headers=["Channel 1", "Channel 2", "Channel 3"],
+                    channel_widths=[30, 60, None], horizontal_line_char="+",
+                    verbose=True)
+    output.add_data(0, "This is some text that will be broken into multiple lines if too long.")
+    output.add_data(1, "This is channel 1's data. Another line here.\nAnd a new line.")
+    output.add_data(2, "Just a simple line.")
+    output.print_all_data(smart_wrap=True)
+"""
