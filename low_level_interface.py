@@ -1,4 +1,6 @@
 import json
+import re
+
 
 class Command:
     """
@@ -101,14 +103,28 @@ class MainClass:
             for idx, cmd in enumerate(self.commands, 1):
                 print(f"{idx}. {cmd.display_name}: {cmd.description}")
 
+  
+
     def find_command_by_trigger(self, trigger_command):
         """
-        Find a command by its trigger string.
+        Find a command by its trigger string, allowing for arguments to be passed in.
 
         Args:
-            trigger_command (str): The trigger string to search for.
+            trigger_command (str): The trigger string to search for (including arguments).
+            
+        Returns:
+            Command or None: The matched command, or None if no match is found.
         """
-        return next((cmd for cmd in self.commands if cmd.trigger_command == trigger_command), None)
+        # Iterate over all commands
+        for cmd in self.commands:
+            # Extract the base command (everything before any space) from the trigger command
+            base_command = cmd.trigger_command.split(' ')[0]  # First word is the base command
+            # Compare the base part of the trigger command
+            if trigger_command.startswith(base_command):
+                # If the base command matches, you could optionally parse arguments here
+                return cmd
+        return None
+
 
     def run(self):
         """
