@@ -138,4 +138,5 @@ class MainClass:
 if __name__ == "__main__":
     app = MainClass(json_file=r"C:\01_PYTHON_CODE\Projects\CPI__CUSTOM_PC_INTERFACE\configuration.json")
     # print(app.get_commands_for_page("Main Menu"))
-    debugger = app.find_command_by_trigger("deasdfbug")
+    debugger = app.find_command_by_trigger("debug")
+    print(debugger.display_name)
