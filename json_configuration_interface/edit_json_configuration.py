@@ -147,7 +147,7 @@ class CommandLineApp:
         if json_file:
             self.load_from_file()
 
-    def add_page(self, page):
+    def _add_page(self, page):
         """
         Adds a Page to the application's page list.
 
@@ -199,7 +199,7 @@ class CommandLineApp:
             page_name (str): The name of the page to add.
         """
         page = Page(name=page_name)
-        self.add_page(page)
+        self._add_page(page)
         print(f"Page '{page_name}' has been added.")
 
     def add_command_to_existing_page(self, page_name, display_name, description, trigger_command, function, args=None, 
@@ -256,24 +256,26 @@ class CommandLineApp:
 
 
 # Example Usage
-# if __name__ == "__main__":
-#     # Initialize the app (if you want to load from a file)
-#     app = CommandLineApp(json_file=r"C:\01_PYTHON_CODE\Projects\CPI__CUSTOM_PC_INTERFACE\configuration.json")
+if __name__ == "__main__":
+    # Initialize the app (if you want to load from a file)
+    app = CommandLineApp(json_file=r"C:\01_PYTHON_CODE\Projects\CPI__CUSTOM_PC_INTERFACE\configuration.json")
     
-#     # Add a command to an existing page
-#     app.add_command_to_existing_page(
-#         page_name="Main Menu",
-#         display_name="Debugger",
-#         description="Used to debug the code of this project.",
-#         trigger_command="debug",
-#         function="debug",
-#         args=None,
-#         next_page=None,
-#         execution_on_initialize=False,
-#         importance="moderate",
-#         run_on_closure=False,
-#         scheduling="none"
-#     )
 
-#     # Save the configuration to file
-#     app.save_to_file()
+    page = app.add_page_from_parameters(page_name="page3")
+    # Add a command to an existing page
+    app.add_command_to_existing_page(
+        page_name="page3",
+        display_name="Debugger",
+        description="Used to debug the code of this project.",
+        trigger_command="debug",
+        function="debug",
+        args=None,
+        next_page=None,
+        execution_on_initialize=False,
+        importance="moderate",
+        run_on_closure=False,
+        scheduling="none"
+    )
+
+    # Save the configuration to file
+    app.save_to_file()

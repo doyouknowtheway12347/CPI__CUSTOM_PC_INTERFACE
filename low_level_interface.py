@@ -91,26 +91,42 @@ class MainClass:
         except json.JSONDecodeError:
             print(f"Error reading JSON from file '{self.json_file}'.")
 
-    def find_command_by_trigger(self, trigger_command):
+    def find_command_by_trigger(self, trigger_command, page_name):
         """
-        Find a command by its trigger string, allowing for arguments to be passed in.
+        Find a command by its trigger string, only within the commands on the specified page.
 
         Args:
             trigger_command (str): The trigger string to search for (including arguments).
-            
+            page_name (str): The name of the page to restrict the search to.
+
         Returns:
-            Command or None: The matched command, or None if no match is found.
+            Command or None: The matched command from the specified page, or None if no match is found.
         """
-        # Iterate over all commands
-        for cmd in self.commands:
-            # Extract the base command (everything before any space) from the trigger command
-            base_command = cmd.trigger_command.split(' ')[0]  # First word is the base command
-            # Compare the base part of the trigger command
-            if trigger_command.lower() == base_command.lower():
-                # If the base command matches, you could optionally parse arguments here
-                return cmd
-    
-        return Command("Error", "No command found with this trigger", None, None, None, None, False, None, None, "none")
+        # Locate the specified page
+        page = next((page for page in self.pages if page['name'] == page_name), None)
+
+        # If page is found, search for the command within that page
+        if page:
+            for cmd_data in page.get('commands', []):
+                base_command = cmd_data['trigger_command'].split(' ')[0]  # Extract base command
+                if trigger_command.lower() == base_command.lower():
+                    # Create and return a Command object from cmd_data if a match is found
+                    return Command(
+                        display_name=cmd_data['display_name'],
+                        description=cmd_data['description'],
+                        trigger_command=cmd_data['trigger_command'],
+                        function=cmd_data['function'],
+                        args=cmd_data.get('args', {}),
+                        next_page=cmd_data.get('next_page'),
+                        execution_on_initialize=cmd_data.get('execution_on_initialize', False),
+                        importance=cmd_data.get('importance', "medium"),
+                        run_on_closure=cmd_data.get('run_on_closure', False),
+                        scheduling=cmd_data.get('scheduling', "none")
+                    )
+
+        # Return an error command if not found
+        return Command("Error", "Command not found", "error", None)
+
 
     def get_page_names(self):
         """
@@ -138,5 +154,5 @@ class MainClass:
 if __name__ == "__main__":
     app = MainClass(json_file=r"C:\01_PYTHON_CODE\Projects\CPI__CUSTOM_PC_INTERFACE\configuration.json")
     # print(app.get_commands_for_page("Main Menu"))
-    debugger = app.find_command_by_trigger("debug")
+    debugger = app.find_command_by_trigger("debug", page_name="Main Menu")
     print(debugger.display_name)

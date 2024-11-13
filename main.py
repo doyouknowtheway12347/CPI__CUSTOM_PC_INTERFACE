@@ -1,6 +1,6 @@
 # ensure when looking for a specific command, that command found is not Error as it could not be found 
+from low_level_interface import MainClass
 
-import json
 
 class Main:
     def __init__(self, config_file, verbose=False):
@@ -15,3 +15,20 @@ class Main:
         self.verbose = verbose  # Verbose mode flag
         self.current_page = "Main Menu"  # Initially set to "Main Menu"
         self.previous_page = "Main Menu"  # Initially set to "Main Menu"
+
+        self.get_info()
+
+    def get_info(self):
+        """Adds the data to the current class
+        """
+        self.data = MainClass(json_file=self.config_file)
+
+    def parse_input(self, input):
+        command = self.data.find_command_by_trigger(input)
+
+        if command.display_name != "Error":
+            pass
+        else:
+            
+            
+            return 
